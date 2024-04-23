@@ -1,7 +1,16 @@
+import 'package:delivery_app/model/restaurant.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class MyCurrentLocation extends StatelessWidget {
+class MyCurrentLocation extends StatefulWidget {
   const MyCurrentLocation({super.key});
+
+  @override
+  State<MyCurrentLocation> createState() => _MyCurrentLocationState();
+}
+
+class _MyCurrentLocationState extends State<MyCurrentLocation> {
+  final textController = TextEditingController();
 
   void openLocationSearchBox(BuildContext context) {
     showDialog
@@ -9,19 +18,29 @@ class MyCurrentLocation extends StatelessWidget {
         builder: (context) =>AlertDialog(
           title: Text("Your Location"),
           content: TextField(
-            decoration: const InputDecoration(hintText: "Search Address.."),
+            decoration: const InputDecoration(hintText: "Enter Address.."),
           ),
           actions: [
             //cancel
             MaterialButton(
-            onPressed:()=> Navigator.pop(context),
+            onPressed:() {
+        Navigator.pop(context);
+        textController.clear();
+        } ,
             child: Text('Cancel'),
 
             ),
 
             //save
             MaterialButton(
-              onPressed:()=> Navigator.pop(context),
+
+              onPressed:(){
+                String newAddress = textController.text;
+                context.read<Restaurant>().updateDeliveryAddress(newAddress);
+                Navigator.pop(context);
+                textController.clear();
+
+                },
               child: Text('Save'),
 
             ),
@@ -47,9 +66,12 @@ class MyCurrentLocation extends StatelessWidget {
           GestureDetector(
             onTap: () =>openLocationSearchBox(context),
             child:
-            Row(children: [
+            Row(
+              children: [
               //address
-              Text("Hollywood Boulevard"),
+              Consumer<Restaurant>(builder: (context,restaurant, child) =>Text(
+                  restaurant.deliveryAddress)
+              ),
 
               //dropdown menu
               Icon(Icons.keyboard_arrow_down_rounded)

@@ -3,7 +3,6 @@ import 'package:delivery_app/model/restaurant.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'home_page.dart';
 
 class FoodPage extends StatefulWidget {
 
@@ -26,21 +25,23 @@ class FoodPage extends StatefulWidget {
 
 class _FoodPageState extends State<FoodPage> {
 
-  void addToCart(Food food, Map<AddOn, bool> selectedAddons) async {
-    // format the list of selected addon
+  //method to add to cart
+  void addToCart(Food food, Map<AddOn, bool> selectedAddons){
+
+    // close the current food page then go back to the previous page
+    Navigator.pop(context);
+
+    //format the list of selected addon
     List<AddOn> currentlySelectedAddons = [];
-    // list of individual addon
-    for (AddOn addon in widget.food.availableAddons) {
-      if (widget.selectedAddOn[addon] == true) {
+    //list of individual addon
+    for(AddOn addon in widget.food.availableAddons) {
+      if(widget.selectedAddOn[addon] == true) {
         currentlySelectedAddons.add(addon);
       }
     }
 
-    // add to cart
-     context.read<Restaurant>().addToCart(food, currentlySelectedAddons);
-
-    // close the current food back then go back to home menu
-    Navigator.pop(context);
+    //add to cart
+    context.read<Restaurant>().addToCart(food, currentlySelectedAddons);
   }
 
   @override
@@ -136,7 +137,6 @@ class _FoodPageState extends State<FoodPage> {
                 const SizedBox(height: 15),
 
                 //button cart
-                // button cart
                 GestureDetector(
                   onTap: () => addToCart(widget.food, widget.selectedAddOn),
                   child: Padding(
